@@ -25,7 +25,7 @@ export function AuthProvider({ children }) {
       }
 
       try {
-        const response = await api.get("/api/auth/me");
+        const response = await api.get("/auth/me");
         const currentUser = response.data.user ?? response.data.data;
 
         setUser(currentUser);
