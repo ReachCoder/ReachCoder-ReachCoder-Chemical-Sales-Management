@@ -23,12 +23,16 @@ import { swaggerSpec } from "../config/swagger.js";
 
 const app = express();
 
+
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://reach-coder-reach-coder-chemical-sa.vercel.app"
+    "https://reach-coder-reach-coder-chemical-sa-delta.vercel.app"
   ],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
 app.use(express.json());
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));

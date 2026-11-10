@@ -25,7 +25,7 @@ export function AuthProvider({ children }) {
       }
 
       try {
-        const response = await api.get("/auth/me");
+        const response = await api.get("/api/auth/me");
         const currentUser = response.data.user ?? response.data.data;
 
         setUser(currentUser);
@@ -42,10 +42,10 @@ export function AuthProvider({ children }) {
 
   // Login
   const login = async (username, password) => {
-    const response = await api.post("/auth/login", {
-      username,
-      password,
-    });
+    const response = await api.post("/api/auth/login", {
+    username,
+    password,
+  });
 
     const token = response.data.token ?? response.data.data?.token;
     const loggedInUser =
@@ -60,7 +60,7 @@ export function AuthProvider({ children }) {
     if (loggedInUser) {
       setUser(loggedInUser);
     } else {
-      const meResponse = await api.get("/auth/me");
+      const meResponse = await api.get("/api/auth/me");
       setUser(meResponse.data.user ?? meResponse.data.data);
     }
 
