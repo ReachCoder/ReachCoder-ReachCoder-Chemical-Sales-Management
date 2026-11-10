@@ -24,7 +24,10 @@ import { swaggerSpec } from "../config/swagger.js";
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: [
+    "http://localhost:5173",
+    "https://reach-coder-reach-coder-chemical-sa.vercel.app"
+  ],
 }));
 app.use(express.json());
 
