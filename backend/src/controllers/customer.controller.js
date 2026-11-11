@@ -137,25 +137,44 @@ export const updateCustomer = async (req, res) => {
   }
 };
 
-// DELETE: Delete customer
+// DELETE: Deactivate customer
 export const deleteCustomer = async (req, res) => {
   try {
-    await prisma.customers.delete({
-      where: {
-        id: BigInt(req.params.id),
-      },
+    const customerId = BigInt(req.params.id);
+
+    const customer = await prisma.customers.findUnique({
+      where: { id: customerId },
     });
 
-    res.status(200).json({
+    if (!customer) {
+      return res.status(404).json({
+        success: false,
+        message: "Customer not found.",
+      });
+    }
+
+    if (!customer.is_active) {
+      return res.status(400).json({
+        success: false,
+        message: "Customer is already inactive.",
+      });
+    }
+
+    await prisma.customers.update({
+      where: { id: customerId },
+      data: { is_active: false },
+    });
+
+    return res.status(200).json({
       success: true,
-      message: "Customer deleted successfully",
+      message: "Customer deactivated successfully.",
     });
   } catch (error) {
-    console.error("Delete customer error:", error);
+    console.error("Deactivate customer error:", error);
 
-    res.status(400).json({
+    return res.status(500).json({
       success: false,
-      message: "Failed to delete customer. Check related sales records.",
+      message: "Failed to deactivate customer.",
     });
   }
 };

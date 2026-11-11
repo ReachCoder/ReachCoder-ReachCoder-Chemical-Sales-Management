@@ -8,7 +8,7 @@ export default function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-[#f4f4f2]">
       <Sidebar
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -17,8 +17,10 @@ export default function MainLayout() {
       <div className="min-h-screen lg:ml-64">
         <Header onMenuClick={() => setSidebarOpen(true)} />
 
-        <main className="p-4 sm:p-6 lg:p-8">
-          <Outlet />
+        <main className="min-h-[calc(100vh-72px)] p-4 sm:p-6 lg:p-8">
+          <div className="mx-auto w-full max-w-[1600px]">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

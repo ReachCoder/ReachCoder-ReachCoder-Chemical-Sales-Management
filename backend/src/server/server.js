@@ -26,13 +26,13 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173",
+  "https://reach-coder-reach-coder-chemical-sales-management-42qzwfx2c.vercel.app",
   "https://reach-coder-reach-coder-chemical-sa-eight.vercel.app",
 ];
 
 app.use(cors({
   origin: allowedOrigins,
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
 }));
 
 app.use(express.json());
