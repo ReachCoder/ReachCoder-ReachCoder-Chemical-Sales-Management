@@ -24,8 +24,11 @@ import { swaggerSpec } from "../config/swagger.js";
 const app = express();
 
 
+
 const allowedOrigins = [
   "http://localhost:5173",
+  "http://127.0.0.1:5173",
+
   "https://reach-coder-reach-coder-chemical-sales-management-42qzwfx2c.vercel.app",
   "https://reach-coder-reach-coder-chemical-sa-eight.vercel.app",
 ];
@@ -34,6 +37,7 @@ app.use(cors({
   origin: allowedOrigins,
   credentials: true,
 }));
+
 
 app.use(express.json());
 
