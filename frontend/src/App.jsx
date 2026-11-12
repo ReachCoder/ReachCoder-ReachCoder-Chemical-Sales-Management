@@ -1,9 +1,9 @@
 
 import {
-  BrowserRouter,
+  HashRouter,
   Routes,
   Route,
-  Navigate,
+  Navigate
 } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthContext";
@@ -22,7 +22,7 @@ import Users from "./pages/Users";
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -44,7 +44,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 

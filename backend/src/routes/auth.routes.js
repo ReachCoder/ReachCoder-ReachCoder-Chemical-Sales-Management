@@ -3,6 +3,7 @@ import express from "express";
 import {
   login,
   getMe,
+  changePassword,
 } from "../controllers/auth.controller.js";
 
 import {
@@ -66,7 +67,10 @@ router.post("/login", login);
  */
 router.get("/me", authenticateToken, getMe);
 
-router.post("/login", login);
-router.get("/me", authenticateToken, getMe);
+router.put(
+  "/change-password",
+  authenticateToken,
+  changePassword
+);
 
 export default router;

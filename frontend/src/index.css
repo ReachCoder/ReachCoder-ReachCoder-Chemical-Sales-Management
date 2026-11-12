@@ -1,4 +1,6 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap');
+
 @import "tailwindcss";
 
 * {
@@ -9,11 +11,18 @@ html {
   scroll-behavior: smooth;
 }
 
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  font-family: Arial, sans-serif;
+  font-family: "Kantumruy Pro", sans-serif;
+  font-weight: 400;
   background: #f4f4f2;
   color: #191919;
   -webkit-font-smoothing: antialiased;
@@ -21,6 +30,7 @@ body {
 
 button {
   cursor: pointer;
+  font-family: inherit;
 }
 
 button:disabled {
@@ -55,4 +65,8 @@ select {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
+}
+
+.font-khmer {
+  font-family: "Kantumruy Pro", sans-serif;
 }

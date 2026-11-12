@@ -7,3 +7,7 @@ dist/
 generated/prisma/
 .DS_Store
 *.log
+
+# Electron Build Files
+frontend/release/
+
