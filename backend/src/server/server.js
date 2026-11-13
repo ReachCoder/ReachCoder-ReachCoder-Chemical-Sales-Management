@@ -20,6 +20,7 @@ import authRoutes from "../routes/auth.routes.js";
 import userRoutes from "../routes/user.routes.js";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "../config/swagger.js";
+import adminRoutes from "../routes/admin.routes.js";
 
 const app = express();
 
@@ -57,6 +58,7 @@ app.use("/api/payment-report", paymentReportRoutes);
 app.use("/api/customer-report", customerReportRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/admin", adminRoutes);
 
 
 // Home API
