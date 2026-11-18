@@ -5,6 +5,7 @@ import {
   Trash2, Eye
 } from "lucide-react";
 import api from "../services/api";
+import { formatCurrency } from "../utils/currency";
 
 const getList = (response) => {
   const data = response.data?.data;
@@ -71,11 +72,7 @@ function Sales() {
     fetchData();
   }, []);
 
-  const formatMoney = (value) =>
-    `$${Number(value || 0).toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`;
+  const formatMoney = (value) => formatCurrency(value);
 
   const totalAmount = useMemo(
     () =>

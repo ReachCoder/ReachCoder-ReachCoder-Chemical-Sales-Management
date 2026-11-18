@@ -1,6 +1,6 @@
-
 import { useCallback, useEffect, useState } from "react";
 import api from "../services/api";
+import { formatCurrency } from "../utils/currency";
 
 import {
   Users,
@@ -44,11 +44,7 @@ function Dashboard() {
 
   const summary = dashboard?.summary;
 
-  const formatMoney = (value) =>
-    `$${Number(value || 0).toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`;
+  const formatMoney = (value) => formatCurrency(value);
 
   const formatNumber = (value) =>
     Number(value || 0).toLocaleString("en-US");

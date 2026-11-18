@@ -4,6 +4,7 @@ import {
   Plus, Search, RefreshCw, Wallet, X, Eye
 } from "lucide-react";
 import api from "../services/api";
+import { formatCurrency } from "../utils/currency";
 
 const getList = (response) => {
   const data = response.data?.data;
@@ -66,11 +67,7 @@ function Payments() {
     fetchData();
   }, []);
 
-  const formatMoney = (value) =>
-    `$${Number(value || 0).toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`;
+  const formatMoney = (value) => formatCurrency(value);
 
   const getSaleNumber = (payment) =>
     payment.sales?.sale_number ||
@@ -430,11 +427,11 @@ function Payments() {
                   type="number"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  min="0.01"
+                  min="1"
                   max={remaining}
-                  step="0.01"
+                  step="1"
                   className="w-full rounded-lg border px-3 py-2.5 text-sm"
-                  placeholder="Enter payment amount"
+                  placeholder="Enter amount in KHR"
                   required
                 />
               </div>

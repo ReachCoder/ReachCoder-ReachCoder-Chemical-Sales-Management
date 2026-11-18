@@ -335,16 +335,24 @@ Sale ID: ${payment.sale_id}
 
 Customer: ${customerName}
 
-Amount Paid: $${new Prisma.Decimal(
-      payment.amount_paid
-    ).toFixed(2)}
+Amount Paid: ${new Intl.NumberFormat("en-US", {
+  maximumFractionDigits: 0,
+}).format(Number(payment.amount_paid))} ៛
 
 Payment Method: ${payment.payment_method}
 
-Total Amount: $${result.summary.total_amount.toFixed(2)}
-Previous Paid: $${result.summary.previous_paid.toFixed(2)}
-Total Paid: $${result.summary.total_paid.toFixed(2)}
-Remaining Balance: $${result.summary.remaining_balance.toFixed(2)}
+Total Amount: ${new Intl.NumberFormat("en-US", {
+  maximumFractionDigits: 0,
+}).format(Number(result.summary.total_amount))} ៛
+Previous Paid: ${new Intl.NumberFormat("en-US", {
+  maximumFractionDigits: 0,
+}).format(Number(result.summary.previous_paid))} ៛
+Total Paid: ${new Intl.NumberFormat("en-US", {
+  maximumFractionDigits: 0,
+}).format(Number(result.summary.total_paid))} ៛
+Remaining Balance: ${new Intl.NumberFormat("en-US", {
+  maximumFractionDigits: 0,
+}).format(Number(result.summary.remaining_balance))} ៛
 
 Date: ${new Date(payment.payment_date).toLocaleString()}
 `;

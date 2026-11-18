@@ -333,7 +333,9 @@ export const createSale = async (req, res) => {
           const subtotal = new Prisma.Decimal(item.unit_price)
             .mul(item.quantity);
 
-          return `- ${item.product_name_snapshot} x ${item.quantity} = $${subtotal.toFixed(2)}`;
+          return `- ${item.product_name_snapshot} x ${item.quantity} = ${new Intl.NumberFormat("en-US", {
+            maximumFractionDigits: 0,
+          }).format(Number(subtotal))} ៛`;
         })
         .join("\n");
 
@@ -349,7 +351,9 @@ Customer: ${customerName}
 Products:
 ${itemsMessage}
 
-Total Amount: $${new Prisma.Decimal(sale.total_amount).toFixed(2)}
+Total Amount: ${new Intl.NumberFormat("en-US", {
+  maximumFractionDigits: 0,
+}).format(Number(sale.total_amount))} ៛
 
 Date: ${new Date().toLocaleString("en-GB", {
         timeZone: "Asia/Phnom_Penh",

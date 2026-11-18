@@ -8,6 +8,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import api from "../services/api";
+import { formatCurrency } from "../utils/currency";
 
 const today = new Date();
 const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -19,11 +20,7 @@ const toDateInput = (date) => {
   return `${year}-${month}-${day}`;
 };
 
-const formatMoney = (value) =>
-  Number(value ?? 0).toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+const formatMoney = (value) => formatCurrency(value);
 
 const formatDate = (value) => {
   if (!value) return "-";
@@ -286,13 +283,13 @@ function Reports() {
             <Card title="Total Sales" value={sales.totalSales ?? 0} icon={BarChart3} />
             <Card
               title="Total Revenue"
-              value={`$${formatMoney(sales.totalRevenue)}`}
+              value={formatMoney(sales.totalRevenue)}
               icon={TrendingUp}
               color="green"
             />
             <Card
               title="Average Sale"
-              value={`$${formatMoney(sales.averageSale)}`}
+              value={`${formatMoney(sales.averageSale)}`}
               icon={CreditCard}
               color="purple"
             />
@@ -309,7 +306,7 @@ function Reports() {
               columns={[
                 { label: "Date", render: (r) => formatDate(r.date) },
                 { label: "Total Sales", key: "totalSales" },
-                { label: "Revenue", render: (r) => `$${formatMoney(r.revenue)}` },
+                { label: "Revenue", render: (r) => `${formatMoney(r.revenue)}` },
               ]}
               rows={dailySales}
             />
@@ -320,7 +317,7 @@ function Reports() {
               columns={[
                 { label: "Product", key: "product_name" },
                 { label: "Quantity Sold", key: "quantity_sold" },
-                { label: "Revenue", render: (r) => `$${formatMoney(r.revenue)}` },
+                { label: "Revenue", render: (r) => `${formatMoney(r.revenue)}` },
               ]}
               rows={topProducts}
             />
@@ -331,7 +328,7 @@ function Reports() {
               columns={[
                 { label: "Sale Number", key: "sale_number" },
                 { label: "Customer", key: "customer_name" },
-                { label: "Amount", render: (r) => `$${formatMoney(r.total_amount)}` },
+                { label: "Amount", render: (r) => `${formatMoney(r.total_amount)}` },
                 { label: "Date", render: (r) => formatDate(r.created_at) },
               ]}
               rows={recentSales}
@@ -346,7 +343,7 @@ function Reports() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <Card
               title="Total Paid"
-              value={`$${formatMoney(payments.total_paid)}`}
+              value={`${formatMoney(payments.total_paid)}`}
               icon={CreditCard}
               color="green"
             />
@@ -357,7 +354,7 @@ function Reports() {
             />
             <Card
               title="Outstanding"
-              value={`$${formatMoney(payments.total_outstanding)}`}
+              value={`${formatMoney(payments.total_outstanding)}`}
               icon={TrendingUp}
               color="orange"
             />
@@ -390,7 +387,7 @@ function Reports() {
                 { label: "Payment Method", key: "payment_method" },
                 {
                   label: "Total Amount",
-                  render: (r) => `$${formatMoney(r.total_amount)}`,
+                  render: (r) => `${formatMoney(r.total_amount)}`,
                 },
                 { label: "Transactions", key: "total_transactions" },
               ]}
@@ -403,9 +400,9 @@ function Reports() {
               columns={[
                 { label: "Sale ID", render: (r) => `#${r.sale_id}` },
                 { label: "Customer", key: "customer" },
-                { label: "Total Amount", render: (r) => `$${formatMoney(r.total_amount)}` },
-                { label: "Paid Amount", render: (r) => `$${formatMoney(r.paid_amount)}` },
-                { label: "Balance", render: (r) => `$${formatMoney(r.balance)}` },
+                { label: "Total Amount", render: (r) => `${formatMoney(r.total_amount)}` },
+                { label: "Paid Amount", render: (r) => `${formatMoney(r.paid_amount)}` },
+                { label: "Balance", render: (r) => `${formatMoney(r.balance)}` },
                 { label: "Date", render: (r) => formatDate(r.created_at) },
               ]}
               rows={outstandingSales}
@@ -418,7 +415,7 @@ function Reports() {
                 { label: "Payment ID", key: "id" },
                 { label: "Sale ID", render: (r) => `#${r.sale_id}` },
                 { label: "Customer", key: "customer" },
-                { label: "Amount", render: (r) => `$${formatMoney(r.amount_paid)}` },
+                { label: "Amount", render: (r) => `${formatMoney(r.amount_paid)}` },
                 { label: "Method", key: "payment_method" },
                 { label: "Received By", key: "received_by" },
                 { label: "Date", render: (r) => formatDate(r.payment_date) },
@@ -457,19 +454,19 @@ function Reports() {
             />
             <Card
               title="Total Revenue"
-              value={`$${formatMoney(customers.total_revenue)}`}
+              value={`${formatMoney(customers.total_revenue)}`}
               icon={TrendingUp}
               color="green"
             />
             <Card
               title="Total Paid"
-              value={`$${formatMoney(customers.total_paid)}`}
+              value={`${formatMoney(customers.total_paid)}`}
               icon={CreditCard}
               color="purple"
             />
             <Card
               title="Outstanding"
-              value={`$${formatMoney(customers.total_outstanding)}`}
+              value={`${formatMoney(customers.total_outstanding)}`}
               icon={CreditCard}
               color="orange"
             />
@@ -480,9 +477,9 @@ function Reports() {
               columns={[
                 { label: "Customer", key: "customer_name" },
                 { label: "Total Sales", key: "total_sales" },
-                { label: "Total Purchased", render: (r) => `$${formatMoney(r.total_purchased)}` },
-                { label: "Total Paid", render: (r) => `$${formatMoney(r.total_paid)}` },
-                { label: "Outstanding", render: (r) => `$${formatMoney(r.outstanding_balance)}` },
+                { label: "Total Purchased", render: (r) => `${formatMoney(r.total_purchased)}` },
+                { label: "Total Paid", render: (r) => `${formatMoney(r.total_paid)}` },
+                { label: "Outstanding", render: (r) => `${formatMoney(r.outstanding_balance)}` },
                 { label: "Last Purchase", render: (r) => formatDate(r.last_purchase) },
               ]}
               rows={topCustomers}
@@ -495,9 +492,9 @@ function Reports() {
                 { label: "Customer ID", key: "customer_id" },
                 { label: "Customer", key: "customer_name" },
                 { label: "Total Sales", key: "total_sales" },
-                { label: "Total Purchased", render: (r) => `$${formatMoney(r.total_purchased)}` },
-                { label: "Total Paid", render: (r) => `$${formatMoney(r.total_paid)}` },
-                { label: "Outstanding", render: (r) => `$${formatMoney(r.outstanding_balance)}` },
+                { label: "Total Purchased", render: (r) => `${formatMoney(r.total_purchased)}` },
+                { label: "Total Paid", render: (r) => `${formatMoney(r.total_paid)}` },
+                { label: "Outstanding", render: (r) => `${formatMoney(r.outstanding_balance)}` },
                 { label: "Last Purchase", render: (r) => formatDate(r.last_purchase) },
               ]}
               rows={customerDetails}
@@ -509,7 +506,7 @@ function Reports() {
               columns={[
                 { label: "Sale ID", render: (r) => `#${r.sale_id}` },
                 { label: "Customer", key: "customer_name" },
-                { label: "Amount", render: (r) => `$${formatMoney(r.total_amount)}` },
+                { label: "Amount", render: (r) => `${formatMoney(r.total_amount)}` },
                 { label: "Date", render: (r) => formatDate(r.created_at) },
               ]}
               rows={recentPurchases}

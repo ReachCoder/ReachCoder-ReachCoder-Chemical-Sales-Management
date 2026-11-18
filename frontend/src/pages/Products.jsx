@@ -5,6 +5,7 @@ import {
   X, Ban, Boxes, CheckCircle
 } from "lucide-react";
 import api from "../services/api";
+import { formatCurrency } from "../utils/currency";
 
 const emptyForm = {
   name: "",
@@ -196,11 +197,7 @@ function Products() {
     0
   );
 
-  const formatMoney = (value) =>
-    `$${Number(value || 0).toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`;
+  const formatMoney = (value) => formatCurrency(value);
 
   return (
     <div className="space-y-6 p-6">
@@ -464,9 +461,9 @@ function Products() {
                     value={form.price}
                     onChange={handleChange}
                     min="0"
-                    step="0.01"
+                    step="1"
                     className={inputClass}
-                    placeholder="25.50"
+                    placeholder="25000"
                     required
                   />
                 </div>
