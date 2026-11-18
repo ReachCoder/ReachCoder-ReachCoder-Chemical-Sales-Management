@@ -107,30 +107,6 @@ export default function Sidebar({ open, onClose }) {
 
         {/* Sidebar Information */}
         <div className="border-t border-white/10 p-4">
-          <div className="rounded-2xl border border-white/5 bg-[#202020] p-4">
-            <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/15 text-orange-400">
-              <Droplets size={20} />
-            </div>
-
-            <h3 className="text-sm font-semibold text-white">
-              Chemical Sales
-            </h3>
-
-            <p className="mt-1 text-xs leading-5 text-gray-500">
-              Manage your business in one place.
-            </p>
-
-            <div className="mt-4 flex items-center justify-between">
-              <span className="text-[10px] text-gray-500">
-                System Version
-              </span>
-
-              <span className="rounded-md bg-white/5 px-2 py-1 text-[10px] font-medium text-orange-400">
-                v1.0
-              </span>
-            </div>
-          </div>
-
           <p className="mt-4 text-center text-[10px] text-gray-600">
             © {new Date().getFullYear()} Chemical Sales System
           </p>
