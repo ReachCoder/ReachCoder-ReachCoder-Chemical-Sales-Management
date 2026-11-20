@@ -456,3 +456,164 @@ Chemical Sales Management System
     });
   }
 };
+
+
+// DELETE SALE
+export const deleteSale = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { user_id } = req.body;
+
+    if (!/^\d+$/.test(String(id)) || !/^\d+$/.test(String(user_id))) {
+      return res.status(400).json({
+        success: false,
+        message: "Valid sale ID and user_id are required",
+      });
+    }
+
+    const saleId = BigInt(id);
+    const userId = BigInt(user_id);
+
+    const result = await prisma.$transaction(async (tx) => {
+      // Check user
+      const user = await tx.users.findUnique({
+        where: { id: userId },
+      });
+
+      if (!user || !user.is_active) {
+        throw new Error("USER_NOT_FOUND");
+      }
+
+      // Get sale and related data
+      const sale = await tx.sales.findUnique({
+        where: { id: saleId },
+        include: {
+          sale_items: true,
+          payments: true,
+        },
+      });
+
+      if (!sale) {
+        throw new Error("SALE_NOT_FOUND");
+      }
+
+      // Do not delete sales with payment history
+      if (sale.payments.length > 0) {
+        throw new Error("SALE_HAS_PAYMENTS");
+      }
+
+      // Restore stock for each sale item
+      const restoredItems = [];
+
+      for (const item of sale.sale_items) {
+        const product = await tx.products.findUnique({
+          where: { id: item.product_id },
+        });
+
+        if (!product) {
+          throw new Error("PRODUCT_NOT_FOUND");
+        }
+
+        const stockBefore = product.stock_quantity;
+        const stockAfter = stockBefore + item.quantity;
+
+        const updated = await tx.products.updateMany({
+          where: {
+            id: product.id,
+            stock_quantity: stockBefore,
+          },
+          data: {
+            stock_quantity: stockAfter,
+          },
+        });
+
+        if (updated.count !== 1) {
+          throw new Error("STOCK_UPDATE_CONFLICT");
+        }
+
+        await tx.stock_movements.create({
+          data: {
+            product_id: product.id,
+            user_id: userId,
+            movement_type: "IN",
+            quantity: item.quantity,
+            stock_before: stockBefore,
+            stock_after: stockAfter,
+            note: `Cancel Sale ${sale.sale_number}`,
+          },
+        });
+
+        restoredItems.push({
+          product_id: product.id.toString(),
+          product_name: item.product_name_snapshot,
+          quantity: item.quantity,
+        });
+      }
+
+      // Preserve Telegram notification history
+      await tx.telegram_notifications.updateMany({
+        where: { sale_id: saleId },
+        data: { sale_id: null },
+      });
+
+      // Record audit log
+      await tx.audit_logs.create({
+        data: {
+          user_id: userId,
+          action: "DELETE",
+          entity: "SALE",
+          entity_id: saleId,
+          details: {
+            sale_number: sale.sale_number,
+            total_amount: sale.total_amount.toString(),
+            restored_items: restoredItems,
+          },
+        },
+      });
+
+      // Delete sale (sale_items are deleted by Cascade)
+      await tx.sales.delete({
+        where: { id: saleId },
+      });
+
+      return {
+        sale_number: sale.sale_number,
+        restored_items: restoredItems,
+      };
+    });
+
+    return res.json({
+      success: true,
+      message: "Sale deleted and stock restored successfully",
+      data: jsonSafe(result),
+    });
+  } catch (error) {
+    console.error("Delete Sale Error:", error);
+
+    const errors = {
+      USER_NOT_FOUND: [404, "User not found or inactive"],
+      SALE_NOT_FOUND: [404, "Sale not found"],
+      SALE_HAS_PAYMENTS: [
+        409,
+        "Cannot delete this sale because it has payment history",
+      ],
+      PRODUCT_NOT_FOUND: [404, "Product not found"],
+      STOCK_UPDATE_CONFLICT: [409, "Stock changed. Please try again"],
+    };
+
+    if (errors[error.message]) {
+      const [status, message] = errors[error.message];
+
+      return res.status(status).json({
+        success: false,
+        message,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to delete sale",
+    });
+  }
+};
+

@@ -5,6 +5,7 @@ import {
   getSales,
   getSaleById,
   createSale,
+  deleteSale,
 } from "../controllers/sale.controller.js";
 
 const router = express.Router();
@@ -12,5 +13,6 @@ const router = express.Router();
 router.get("/", getSales);
 router.get("/:id", getSaleById);
 router.post("/", createSale);
+router.delete("/:id", deleteSale);
 
 export default router;

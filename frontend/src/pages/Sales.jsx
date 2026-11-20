@@ -24,6 +24,7 @@ function Sales() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [selectedSale, setSelectedSale] = useState(null);
@@ -243,6 +244,53 @@ function Sales() {
     sale.customers?.name ||
     sale.customer?.name ||
     "-";
+  
+  const handleDeleteSale = async (sale) => {
+    const saleNumber = sale.sale_number || `SALE-${sale.id}`;
+
+    if (sale.payments?.length > 0) {
+      setError("Cannot delete this sale because it has payment history.");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${saleNumber}?\n\nThe stock will be restored automatically.`
+    );
+
+    if (!confirmed) return;
+
+    if (!userId) {
+      setError("Unable to identify user. Please log in again.");
+      return;
+    }
+
+    try {
+      setDeletingId(String(sale.id));
+      setError("");
+      setMessage("");
+
+      await api.delete(`/sales/${sale.id}`, {
+        data: {
+          user_id: String(userId),
+        },
+      });
+
+      setMessage(`${saleNumber} deleted successfully. Stock restored.`);
+      
+      if (String(selectedSale?.id) === String(sale.id)) {
+        setSelectedSale(null);
+      }
+
+      await fetchData();
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "Failed to delete sale"
+      );
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
 
   const getSaleTotal = (sale) =>
     sale.total_amount ?? sale.total ?? 0;
@@ -355,7 +403,7 @@ function Sales() {
                 <th className="px-5 py-4 font-medium">Customer</th>
                 <th className="px-5 py-4 font-medium">Date</th>
                 <th className="px-5 py-4 font-medium">Total Amount</th>
-                <th className="px-5 py-4 text-right font-medium">Details</th>
+                <th className="px-5 py-4 text-right font-medium">Actions</th>
               </tr>
             </thead>
 
@@ -387,15 +435,32 @@ function Sales() {
                     <td className="px-5 py-4 font-semibold text-gray-900">
                       {formatMoney(getSaleTotal(sale))}
                     </td>
+                    
                     <td className="px-5 py-4 text-right">
-                      <button
-                        onClick={() => setSelectedSale(sale)}
-                        className="rounded-lg p-2 text-blue-600 hover:bg-blue-50"
-                        title="View details"
-                      >
-                        <Eye size={18} />
-                      </button>
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => setSelectedSale(sale)}
+                          className="rounded-lg p-2 text-blue-600 hover:bg-blue-50"
+                          title="View details"
+                        >
+                          <Eye size={18} />
+                        </button>
+
+                        <button
+                          onClick={() => handleDeleteSale(sale)}
+                          disabled={deletingId === String(sale.id) || Boolean(sale.payments?.length)}
+                          className="rounded-lg p-2 text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40"
+                          title={
+                            sale.payments?.length
+                              ? "Cannot delete sale with payment history"
+                              : "Delete sale and restore stock"
+                          }
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
                     </td>
+
                   </tr>
                 ))
               )}
